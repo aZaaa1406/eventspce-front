@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
 import NavBarHome from "@/components/nav-bar-home";
+import { Toaster } from "sonner";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -25,6 +26,7 @@ export default function RootLayout({
       >
         <NavBarHome />
         {children}
+        <Toaster position="top-center" richColors/>
       </body>
     </html>
   );

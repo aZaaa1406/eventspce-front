@@ -25,11 +25,11 @@ function NavBarHome() {
                         <MenubarTrigger>Registrarse</MenubarTrigger>
                         <MenubarContent>
                             <MenubarItem>
-                                <Link href="/register">Propietario</Link>
+                                <Link href="/formsAuth/register/propietario">Propietario</Link>
                             </MenubarItem>
                             <MenubarSeparator />
                             <MenubarItem>
-                                <Link href="/register">Cliente</Link>
+                                <Link href="/formsAuth/register/cliente">Cliente</Link>
                             </MenubarItem>
                         </MenubarContent>
                     </MenubarMenu>

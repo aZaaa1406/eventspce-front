@@ -1,12 +1,18 @@
 "use client"
 import React from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from './ui/card'
 import { FormControl, Form, FormField, FormItem, FormLabel, FormMessage } from './ui/form'
 import { Input } from './ui/input'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from './ui/button'
+// import { apiURL } from '../config'
+import { toast } from 'sonner'
+import { useState } from 'react'
+import axios from 'axios'
+import { Loader2 } from 'lucide-react'
+import Link from 'next/link'
 
 const loginSchema = z.object({
     email: z.string({
@@ -22,15 +28,32 @@ const loginSchema = z.object({
 type LoginType = z.infer<typeof loginSchema>;
 function LoginForm() {
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const form = useForm({
         resolver: zodResolver(loginSchema),
-        
+
     })
 
-    const onSubmit = form.handleSubmit((values: LoginType)=> {
-        console.log(values);
+    const onSubmit = form.handleSubmit(async (values: LoginType) => {
+        setIsLoading(true);
+        try {
+            console.log("datos enviados", values);
+            const { data } = await axios.post(`http://localhost:4000/api/users/login`, values, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            console.log("respuesta del servidor", data);
+        } catch (error) {
+            console.log("Error", error.response.data.error);
+            toast.error("Ha ocurrido un error", {
+                description: error.response.data.error
+            })
+        }
+        finally {
+            setIsLoading(false);
+        }
     })
-    console.log(form.watch());
     console.log(form.formState.errors);
     return (
         <Card className="p-8">
@@ -38,14 +61,14 @@ function LoginForm() {
                 <CardTitle className='font-bold text-2xl'>Inicio de Sesión</CardTitle>
                 <CardDescription className='align-middle'>Ingrese sus credenciales para acceder a su cuenta</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className='space-y-4'>
                 <Form {...form}>
-                    <form className="space-y-8" onSubmit={onSubmit}>
+                    <form className="space-y-8 flex flex-col items-center" onSubmit={onSubmit}>
                         <FormField
                             name='email'
                             control={form.control}
                             render={({ field }) => (
-                                <FormItem>
+                                <FormItem className="w-full max-w-sm">
                                     <FormLabel>Email</FormLabel>
                                     <FormControl>
                                         <Input type="Text" {...field} placeholder='a@ejemplo.com' />
@@ -58,22 +81,38 @@ function LoginForm() {
                             name='password'
                             control={form.control}
                             render={({ field }) => (
-                                <FormItem>
+                                <FormItem className="w-full max-w-sm">
                                     <FormLabel>Contraseña</FormLabel>
                                     <FormControl>
-                                        <Input type="password" {...field} max='12'/>
+                                        <Input type="password" {...field} max='12' />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
 
-                        <Button type="submit" className='bg-blue-500 text-white '>Ingresar</Button>
+                        <Button type="submit" className='bg-blue-500 text-white max-w-sm'>
+                            {isLoading ? (
+                                <>
+                                    <Loader2 className='animate-spin' size={20} />
+                                    Iniciando Sesión
+                                </>
+                            ) : (
+                                'Iniciar Sesión'
+                            )}
+                        </Button>
                     </form>
                 </Form>
+                <Link href={'/'} className='text-blue-500 align-end' >
+                    ¿Olvidaste tu contraseña?
+                </Link>
             </CardContent>
-
-
+            <CardFooter className='text-xs block text-center'>
+                <Link href={'/'} className='flex items-center space-x-1' >
+                    <p>¿Aun no tienes cuenta?</p><span className='text-blue-500'>Registrate</span>
+                </Link>
+                
+            </CardFooter>
         </Card>
     )
 }
