@@ -56,6 +56,7 @@ const registerSchema = z.object({
   password: z.string().min(6).max(12).regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#\$%&])[A-Za-z\d#\$%&]{6,12}$/, {
     message: "La contraseña debe tener al menos una mayúscula, una minúscula, un número y un carácter especial"
   }),
+  rol: z.string().optional()
 })
 
 
@@ -135,8 +136,8 @@ export default function FormRegister({ role }: { role: string }) {
               control={form.control}
               render={({ field }) => (
                 <FormItem className="w-full max-w-sm">
-                  <FormLabel>Fecha de Nacimiento</FormLabel>
-                  <BirthdayForm name="fechaNac" control={form.control} {...field}/>
+                  <FormLabel>Fecha de Nacimiento</FormLabel> 
+                  <BirthdayForm control={form.control} {...field}/>
                   <FormMessage />
                 </FormItem>
               )}
