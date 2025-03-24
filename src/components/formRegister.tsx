@@ -3,8 +3,7 @@
 import React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
-import { Card, CardTitle, CardDescription, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardTitle, CardDescription, CardHeader, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
@@ -137,7 +136,7 @@ export default function FormRegister({ role }: { role: string }) {
               render={({ field }) => (
                 <FormItem className="w-full max-w-sm">
                   <FormLabel>Fecha de Nacimiento</FormLabel>
-                  <BirthdayForm name="fechaNac" control={form.control} />
+                  <BirthdayForm name="fechaNac" control={form.control} {...field}/>
                   <FormMessage />
                 </FormItem>
               )}

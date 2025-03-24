@@ -93,7 +93,7 @@ interface BirthdayFormProps {
   required?: boolean
 }
 
-export default function BirthdayForm({ name, control, required = false }: BirthdayFormProps) {
+export default function BirthdayForm({ name, control = false }: BirthdayFormProps) {
   const {
     field: { value, onChange },
   } = useController({
@@ -108,7 +108,7 @@ export default function BirthdayForm({ name, control, required = false }: Birthd
       // Esta línea no modifica lo que se muestra, solo cómo se envía el valor
       const formattedDate = format(value, "yyyy-MM-dd")
       // Si necesitas que el valor sea string en lugar de Date, descomenta la siguiente línea
-      // onChange(formattedDate);
+      onChange(formattedDate);
     }
   }, [value])
 
