@@ -44,7 +44,7 @@ function LoginForm() {
                 withCredentials: true
             })
             console.log("respuesta del servidor", data);
-        } catch (error) {
+        } catch (error: any) {
             console.log("Error", error.response.data.error);
             toast.error("Ha ocurrido un error", {
                 description: error.response.data.error
