@@ -13,22 +13,52 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { FormControl } from "@/components/ui/form"
 
-// Componente personalizado para la navegación del calendario
-function CustomNavigation({
-  currentMonth,
-  currentYear,
-  onMonthChange,
-  onYearChange,
-  goToNextMonth,
-  goToPreviousMonth,
-}: {
-  currentMonth: number
-  currentYear: number
-  onMonthChange: (month: number) => void
-  onYearChange: (year: number) => void
-  goToNextMonth: () => void
-  goToPreviousMonth: () => void
-}) {
+interface BirthdayFormProps {
+  name: string
+  control: Control<any>
+}
+
+export default function BirthdayForm({ name, control }: BirthdayFormProps) {
+  const {
+    field: { value, onChange },
+  } = useController({
+    name,
+    control,
+    defaultValue: undefined,
+  })
+
+  // Estado para el mes y año actuales
+  const [month, setMonth] = React.useState<Date>(new Date())
+
+  // Obtener el mes y año actuales
+  const currentMonth = month ? month.getMonth() : new Date().getMonth()
+  const currentYear = month ? month.getFullYear() : new Date().getFullYear()
+
+  // Función para cambiar el mes
+  const handleMonthChange = (monthIndex: number) => {
+    const newDate = new Date(currentYear, monthIndex, 1)
+    setMonth(newDate)
+  }
+
+  // Función para cambiar el año
+  const handleYearChange = (year: number) => {
+    const newDate = new Date(year, currentMonth, 1)
+    setMonth(newDate)
+  }
+
+  // Función para ir al mes siguiente
+  const goToNextMonth = () => {
+    const newDate = new Date(currentYear, currentMonth + 1, 1)
+    setMonth(newDate)
+  }
+
+  // Función para ir al mes anterior
+  const goToPreviousMonth = () => {
+    const newDate = new Date(currentYear, currentMonth - 1, 1)
+    setMonth(newDate)
+  }
+
+  // Lista de meses en español
   const months = [
     "Enero",
     "Febrero",
@@ -44,98 +74,11 @@ function CustomNavigation({
     "Diciembre",
   ]
 
+  // Generar lista de años desde 1930 hasta el año actual
   const currentYearDate = new Date()
   const maxYear = currentYearDate.getFullYear()
   const minYear = 1930
   const years = Array.from({ length: maxYear - minYear + 1 }, (_, i) => maxYear - i)
-
-  return (
-    <div className="flex items-center justify-between px-2 py-1">
-      <Button variant="outline" size="icon" className="h-7 w-7" onClick={goToPreviousMonth}>
-        <ChevronLeft className="h-4 w-4" />
-      </Button>
-      <div className="flex items-center gap-1">
-        <Select value={currentMonth.toString()} onValueChange={(value) => onMonthChange(Number.parseInt(value))}>
-          <SelectTrigger className="h-8 w-[110px]">
-            <SelectValue placeholder="Mes" />
-          </SelectTrigger>
-          <SelectContent>
-            {months.map((month, index) => (
-              <SelectItem key={index} value={index.toString()}>
-                {month}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={currentYear.toString()} onValueChange={(value) => onYearChange(Number.parseInt(value))}>
-          <SelectTrigger className="h-8 w-[90px]">
-            <SelectValue placeholder="Año" />
-          </SelectTrigger>
-          <SelectContent className="max-h-[200px]">
-            {years.map((year) => (
-              <SelectItem key={year} value={year.toString()}>
-                {year}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <Button variant="outline" size="icon" className="h-7 w-7" onClick={goToNextMonth}>
-        <ChevronRight className="h-4 w-4" />
-      </Button>
-    </div>
-  )
-}
-
-interface BirthdayFormProps {
-  name: string
-  control: Control<any>
-}
-
-export default function BirthdayForm({ name, control }: BirthdayFormProps) {
-  const {
-    field: { value, onChange },
-  } = useController({
-    name,
-    control,
-    defaultValue: undefined,
-  })
-
-  // Transformar la fecha a formato YYYY-MM-DD para el envío
-  React.useEffect(() => {
-    if (value) {
-      // Esta línea no modifica lo que se muestra, solo cómo se envía el valor
-      const formattedDate = format(value, "yyyy-MM-dd")
-      // Si necesitas que el valor sea string en lugar de Date, descomenta la siguiente línea
-      onChange(formattedDate);
-    }
-  }, [value, onChange]) // Añadido onChange a las dependencias
-
-  const [calendarDate, setCalendarDate] = React.useState<Date>(new Date())
-
-  const handleMonthChange = (month: number) => {
-    const newDate = new Date(calendarDate)
-    newDate.setMonth(month)
-    setCalendarDate(newDate)
-  }
-
-  const handleYearChange = (year: number) => {
-    const newDate = new Date(calendarDate)
-    newDate.setFullYear(year)
-    setCalendarDate(newDate)
-  }
-
-  const goToNextMonth = () => {
-    const newDate = new Date(calendarDate)
-    newDate.setMonth(newDate.getMonth() + 1)
-    setCalendarDate(newDate)
-  }
-
-  const goToPreviousMonth = () => {
-    const newDate = new Date(calendarDate)
-    newDate.setMonth(newDate.getMonth() - 1)
-    setCalendarDate(newDate)
-  }
 
   return (
     <FormControl>
@@ -150,28 +93,60 @@ export default function BirthdayForm({ name, control }: BirthdayFormProps) {
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
+          {/* Navegación personalizada */}
+          <div className="flex items-center justify-between px-2 py-2 border-b">
+            <Button variant="outline" size="icon" className="h-7 w-7" onClick={goToPreviousMonth}>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <div className="flex items-center gap-1">
+              <Select
+                value={currentMonth.toString()}
+                onValueChange={(value) => handleMonthChange(Number.parseInt(value))}
+              >
+                <SelectTrigger className="h-8 w-[110px]">
+                  <SelectValue placeholder="Mes" />
+                </SelectTrigger>
+                <SelectContent>
+                  {months.map((month, index) => (
+                    <SelectItem key={index} value={index.toString()}>
+                      {month}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select
+                value={currentYear.toString()}
+                onValueChange={(value) => handleYearChange(Number.parseInt(value))}
+              >
+                <SelectTrigger className="h-8 w-[90px]">
+                  <SelectValue placeholder="Año" />
+                </SelectTrigger>
+                <SelectContent className="max-h-[200px]">
+                  {years.map((year) => (
+                    <SelectItem key={year} value={year.toString()}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Button variant="outline" size="icon" className="h-7 w-7" onClick={goToNextMonth}>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+
+          {/* Calendario */}
           <Calendar
             mode="single"
             selected={value}
             onSelect={onChange}
-            month={calendarDate}
-            onMonthChange={setCalendarDate}
+            month={month}
+            onMonthChange={setMonth}
             initialFocus
             locale={es}
-            fromYear={1930}
-            toYear={new Date().getFullYear()}
-            components={{
-              Caption: ({ displayMonth }) => (
-                <CustomNavigation
-                  currentMonth={displayMonth.getMonth()}
-                  currentYear={displayMonth.getFullYear()}
-                  onMonthChange={handleMonthChange}
-                  onYearChange={handleYearChange}
-                  goToNextMonth={goToNextMonth}
-                  goToPreviousMonth={goToPreviousMonth}
-                />
-              ),
-            }}
+            showOutsideDays={false}
+            // No usamos el prop components ya que causa error de tipo
+            // En su lugar, hemos añadido nuestra navegación personalizada arriba
           />
         </PopoverContent>
       </Popover>
