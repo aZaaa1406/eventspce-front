@@ -93,7 +93,7 @@ interface BirthdayFormProps {
   required?: boolean
 }
 
-export default function BirthdayForm({ name, control = false }: BirthdayFormProps) {
+export default function BirthdayForm({ name, control, required = false }: BirthdayFormProps) {
   const {
     field: { value, onChange },
   } = useController({
