@@ -90,10 +90,9 @@ function CustomNavigation({
 interface BirthdayFormProps {
   name: string
   control: Control<any>
-  required?: boolean
 }
 
-export default function BirthdayForm({ name, control, required = false }: BirthdayFormProps) {
+export default function BirthdayForm({ name, control }: BirthdayFormProps) {
   const {
     field: { value, onChange },
   } = useController({
@@ -110,7 +109,7 @@ export default function BirthdayForm({ name, control, required = false }: Birthd
       // Si necesitas que el valor sea string en lugar de Date, descomenta la siguiente línea
       onChange(formattedDate);
     }
-  }, [value])
+  }, [value, onChange]) // Añadido onChange a las dependencias
 
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date())
 
