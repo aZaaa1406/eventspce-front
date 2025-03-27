@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import axios from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { URL_API }  from "@/config";
 
 const registerSchema = z.object({
   nombre: z.string({
@@ -79,7 +80,7 @@ export default function FormRegister({ role }: { role: string }) {
       setIsLoading(true);
       values.rol = rol
       console.log("Datos", values);
-      const { data } = await axios.post(`http://localhost:4000/api/users/register`, values, {
+      const { data } = await axios.post(`${URL_API}/api/users/register`, values, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true
       })

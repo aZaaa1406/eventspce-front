@@ -13,6 +13,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import { URL_API } from '@/config'
 
 const loginSchema = z.object({
     email: z.string({
@@ -39,7 +40,7 @@ function LoginForm() {
         setIsLoading(true);
         try {
             console.log("datos enviados", values);
-            const { data } = await axios.post(`http://localhost:4000/api/users/login`, values, {
+            const { data } = await axios.post(`${URL_API}/api/users/login`, values, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
