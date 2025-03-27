@@ -8,11 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 import BirthdayForm from "./birthdayForm";
-import { z } from "zod"; 
+import { z } from "zod";
 import { Loader2 } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {format} from "date-fns";
-
+import { format } from "date-fns";
+import axios from "axios";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const registerSchema = z.object({
   nombre: z.string({
@@ -63,6 +65,8 @@ const registerSchema = z.object({
 type RegisterType = z.infer<typeof registerSchema>;
 // Recibe el rol como prop desde `page.tsx`
 export default function FormRegister({ role }: { role: string }) {
+
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm({
     resolver: zodResolver(registerSchema),
@@ -74,9 +78,21 @@ export default function FormRegister({ role }: { role: string }) {
     try {
       setIsLoading(true);
       values.rol = rol
-      console.log("Datos",values);
-    } catch (error) {
-      console.error("Error al registrar:", error);
+      console.log("Datos", values);
+      const { data } = await axios.post(`http://localhost:4000/api/users/register`, values, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true
+      })
+      console.log("respuesta del servidor", data.status);
+      if(data.status === 200){
+        toast.success("Usuario registrado correctamente")
+        router.push('/formsAuth/login')
+      }
+    } catch (error: any) {
+      console.log("Error", error.response.data.error);
+      toast.error("Ha ocurrido un error", {
+        description: error.response.data.error
+      })
     }
   })
 
@@ -99,7 +115,7 @@ export default function FormRegister({ role }: { role: string }) {
                   <FormControl>
                     <Input type="Text" {...field} placeholder='Ingrese su nombre' />
                   </FormControl>
-                  <FormMessage/>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -113,7 +129,7 @@ export default function FormRegister({ role }: { role: string }) {
                     <FormControl>
                       <Input type="Text" {...field} placeholder='Ingrese su Apellido Paterno' />
                     </FormControl>
-                    <FormMessage/>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -126,7 +142,7 @@ export default function FormRegister({ role }: { role: string }) {
                     <FormControl>
                       <Input type="Text" {...field} placeholder='Ingrese su Apellido Materno' />
                     </FormControl>
-                    <FormMessage/>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -136,8 +152,8 @@ export default function FormRegister({ role }: { role: string }) {
               control={form.control}
               render={({ field }) => (
                 <FormItem className="w-full max-w-sm">
-                  <FormLabel>Fecha de Nacimiento</FormLabel> 
-                  <BirthdayForm control={form.control} {...field}/>
+                  <FormLabel>Fecha de Nacimiento</FormLabel>
+                  <BirthdayForm control={form.control} {...field} />
                   <FormMessage />
                 </FormItem>
               )}
@@ -151,7 +167,7 @@ export default function FormRegister({ role }: { role: string }) {
                   <FormControl>
                     <Input type="Text" {...field} placeholder='a@ejemplo.com' />
                   </FormControl>
-                  <FormMessage/>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -164,7 +180,7 @@ export default function FormRegister({ role }: { role: string }) {
                   <FormControl>
                     <Input type="Text" {...field} placeholder='5555555555' />
                   </FormControl>
-                  <FormMessage/>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -177,7 +193,7 @@ export default function FormRegister({ role }: { role: string }) {
                   <FormControl>
                     <Input type="Password" {...field} />
                   </FormControl>
-                  <FormMessage/>
+                  <FormMessage />
                 </FormItem>
               )}
             />
