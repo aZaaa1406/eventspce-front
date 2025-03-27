@@ -80,6 +80,7 @@ export default function FormRegister({ role }: { role: string }) {
       setIsLoading(true);
       values.rol = rol
       console.log("Datos", values);
+      console.log(URL_API);
       const { data } = await axios.post(`${URL_API}/api/users/register`, values, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true
