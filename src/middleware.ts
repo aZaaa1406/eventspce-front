@@ -21,6 +21,7 @@ export async function middleware(request: NextRequest) {
     try {
         const secretJWT = new TextEncoder().encode(secret);
         const { payload } = await jwtVerify(token, secretJWT);
+        console.log(payload);
         const role = payload.rol as string | undefined;
         // Definir permisos por rol
         const rolePermissions: Record<string, string[]> = {
