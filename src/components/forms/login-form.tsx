@@ -1,12 +1,12 @@
 "use client"
 import React from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from './ui/card'
-import { FormControl, Form, FormField, FormItem, FormLabel, FormMessage } from './ui/form'
-import { Input } from './ui/input'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '../ui/card'
+import { FormControl, Form, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
+import { Input } from '../ui/input'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
 // import { apiURL } from '../config'
 import { toast } from 'sonner'
 import { useState } from 'react'
@@ -14,6 +14,7 @@ import axios from 'axios'
 import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { URL_API } from '@/config'
+import { useRouter } from 'next/navigation'
 
 const loginSchema = z.object({
     email: z.string({
@@ -28,6 +29,7 @@ const loginSchema = z.object({
 
 type LoginType = z.infer<typeof loginSchema>;
 function LoginForm() {
+    const router = useRouter()
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -53,6 +55,8 @@ function LoginForm() {
         }
         finally {
             setIsLoading(false);
+            router.push('/cliente/inicio')
+
         }
     })
     console.log(form.formState.errors);
@@ -83,13 +87,21 @@ function LoginForm() {
                             control={form.control}
                             render={({ field }) => (
                                 <FormItem className="w-full max-w-sm">
-                                    <FormLabel>Contraseña</FormLabel>
+                                    <FormLabel className="flex justify-between items-center w-full space text-05">
+                                        <p className="font-bold whitespace-nowrap">Contraseña</p>
+                                        <Link href={'/forgot-password'} className="text-xs text-blue-500 whitespace-nowrap">
+                                            ¿Olvidaste tu contraseña?
+                                        </Link>
+                                    </FormLabel>
                                     <FormControl>
                                         <Input type="password" {...field} max='12' />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
+
+
                             )}
+
                         />
 
                         <Button type="submit" className='bg-blue-500 text-white max-w-sm'>
@@ -104,15 +116,13 @@ function LoginForm() {
                         </Button>
                     </form>
                 </Form>
-                <Link href={'/'} className='text-blue-500 align-end' >
-                    ¿Olvidaste tu contraseña?
-                </Link>
+
             </CardContent>
             <CardFooter className='text-xs block text-center'>
                 <Link href={'/'} className='flex items-center space-x-1' >
                     <p>¿Aun no tienes cuenta?</p><span className='text-blue-500'>Registrate</span>
                 </Link>
-                
+
             </CardFooter>
         </Card>
     )

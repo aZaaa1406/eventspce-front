@@ -1,6 +1,6 @@
 "use client"
 
-import FormRegister from "@/components/formRegister";
+import FormRegister from "@/components/forms/formRegister";
 import { usePathname } from "next/navigation";
 
 export default function RegisterPage() {
