@@ -46,7 +46,11 @@ function LoginForm() {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
-            console.log("respuesta del servidor", data);
+            if(data.status === 200){
+                toast.success("Inicio de sesión exitoso")
+                console.log("respuesta del servidor", data.status);
+                router.push('/cliente')
+            }
         } catch (error: any) {
             console.log("Error", error.response.data.error);
             toast.error("Ha ocurrido un error", {
@@ -55,7 +59,6 @@ function LoginForm() {
         }
         finally {
             setIsLoading(false);
-            router.push('/cliente/inicio')
 
         }
     })
