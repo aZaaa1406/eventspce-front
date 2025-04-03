@@ -5,16 +5,19 @@ import { secret } from "./config";
 
 export async function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
+    
 
     // Permitir acceso libre a la ruta "/"
     if (pathname === "/") {
         return NextResponse.next();
     }
 
-    const token = request.cookies.get("access_token")?.value;
 
+    const token = request.cookies.get("access_token")?.value;
+    console.log("token:", token);
     // Si no hay token y la ruta no es "/", redirigir al login
     if (!token) {
+        console.log("no hay token");
         return NextResponse.redirect(new URL('/formsAuth/login', request.url));
     }
 
