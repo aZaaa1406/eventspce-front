@@ -25,6 +25,7 @@ export async function middleware(request: NextRequest) {
     try {
         // Verificar y decodificar el JWT
         const secretJWT = new TextEncoder().encode(secret);
+        console.log(secretJWT);
         const { payload } = await jwtVerify(tokenValue, secretJWT);
         console.log("payload:", payload);
         const role = payload.rol as string | undefined;
