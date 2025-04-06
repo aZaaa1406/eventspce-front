@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
-import { secret } from "./config";
 
 export async function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
@@ -24,6 +23,7 @@ export async function middleware(request: NextRequest) {
 
     try {
         // Verificar y decodificar el JWT
+        const secret = process.env.SECRET_KEY
         const secretJWT = new TextEncoder().encode(secret);
         const { payload } = await jwtVerify(tokenValue, secretJWT);
         console.log("payload:", payload);
