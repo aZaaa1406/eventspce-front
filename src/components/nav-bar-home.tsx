@@ -10,6 +10,7 @@ import {
     MenubarTrigger,
 } from "@/components/ui/menubar"
 
+
 function NavBarHome() {
     return (
         <nav className="bg-purple-300 text-black p-4">
