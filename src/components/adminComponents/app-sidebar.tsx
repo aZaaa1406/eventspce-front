@@ -36,11 +36,11 @@ const data = {
       items: [
         {
           title: "Propietarios",
-          url: "#",
+          url: "/admin/propietarios",
         },
         {
           title: "Clientes",
-          url: "#",
+          url: "/admin/clientes",
         },
       ],
     },

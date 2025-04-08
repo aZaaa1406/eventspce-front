@@ -48,8 +48,21 @@ function LoginForm() {
             })
             if(data.status === 200){
                 toast.success("Inicio de sesión exitoso")
-                console.log("respuesta del servidor", data.status);
-                router.push('/cliente')
+                console.log("respuesta del servidor", data.status, data.rol);
+                switch(data.rol){
+                    case "admin":
+                        router.push('/admin')
+                        break;
+                    case "propietario":
+                        router.push('/propietario')
+                        break;
+                    case "cliente":
+                        router.push('/cliente')
+                        break;
+                    default:
+                        router.push('/unauthorized')
+                        break;
+                }
             }
         } catch (error: any) {
             console.log("Error", error.response.data.error);
