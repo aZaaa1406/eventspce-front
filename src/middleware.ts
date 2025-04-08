@@ -28,21 +28,21 @@ export async function middleware(request: NextRequest) {
         console.log(secretJWT);
         const { payload } = await jwtVerify(tokenValue, secretJWT);
         console.log("payload:", payload);
-        // const role = payload.rol as string | undefined;
+        const role = payload.rol as string | undefined;
 
-        // // Definir permisos por rol
-        // const rolePermissions: Record<string, string[]> = {
-        //     propietario: ["/propietario"],
-        //     cliente: ["/cliente"],
-        //     admin: ["/admin", "/propietario", "/cliente"]
-        // };
+        //Definir permisos por rol
+        const rolePermissions: Record<string, string[]> = {
+            propietario: ["/propietario"],
+            cliente: ["/cliente"],
+            admin: ["/admin", "/propietario", "/cliente"]
+        };
 
-        // // Si el usuario no tiene rol definido, redirigir a unauthorized
-        // if (!role || !rolePermissions[role]?.some(path => pathname.startsWith(path))) {
-        //     return NextResponse.redirect(new URL('/unauthorized', request.url));
-        // }
+        //Si el usuario no tiene rol definido, redirigir a unauthorized
+        if (!role || !rolePermissions[role]?.some(path => pathname.startsWith(path))) {
+            return NextResponse.redirect(new URL('/unauthorized', request.url));
+        }
 
-        // Si pasa la validación, permitir el acceso
+        //Si pasa la validación, permitir el acceso
         return NextResponse.next();
     } catch (error) {
         // Si el token no es válido o ocurre un error, redirigir al login
