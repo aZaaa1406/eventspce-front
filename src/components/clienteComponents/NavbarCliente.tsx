@@ -14,7 +14,7 @@ import {
 
 function NavbarCliente() {
     return (
-        <nav className=" bg-white text-black p-4 text-bold">
+        <nav className=" bg-purple-100 text-black p-4 text-bold">
             <div className="container mx-auto flex justify-between items-center">
                 <h1 className="text-xl font-bold">EventSpace</h1>
                 <Menubar className='bg-transparent text-black p-4 border-0 content-center space-x-20'>

@@ -2,7 +2,8 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
-
+import { Dialog, DialogContent,DialogClose, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { TriangleAlert } from "lucide-react"
 export type Propietarios = {
     id_user: number,
     nombre: string,
@@ -12,7 +13,7 @@ export type Propietarios = {
     telefono: string,
 }
 
-export const columns: ColumnDef<Propietarios>[] = [
+export const columns = (handleDelete: (id: number) => void): ColumnDef<Propietarios>[] => [
     {
         accessorKey: "id_user",
         header: "ID",
@@ -38,19 +39,40 @@ export const columns: ColumnDef<Propietarios>[] = [
         header: "Teléfono",
     },
     {
-        id: "actions", // 👈 importante: no usar accessorKey aquí
-        header: "Acciones",
-        cell: ({ row }) => {
-            const propietario = row.original
-
-            return (
-                <Button
-                    onClick={() => alert(`Eliminar propietario ${propietario.nombre} con ID ${propietario.id_user}`)}
-                    variant="destructive"
-                >
-                    Eliminar
-                </Button>
-            )
-        }
-    }
+            id: "actions",
+            header: "Acciones",
+            cell: ({ row }) => {
+              const cliente = row.original
+        
+              return (
+                <>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="destructive">Eliminar</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader className="items-center justify-center">
+                        <DialogTitle>Eliminar cliente</DialogTitle>
+                        <TriangleAlert className="text-red-500" size={40} />
+                        <DialogDescription>¿Desea eliminar a {cliente.nombre}?</DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter>
+                        <DialogClose asChild>
+                          <Button variant="outline">Cancelar</Button>
+                        </DialogClose>
+                        <DialogClose asChild>
+                          <Button
+                            onClick={() => handleDelete(cliente.id_user)}
+                            variant="destructive"
+                          >
+                            Confirmar
+                          </Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </>
+              )
+            }
+          }
 ]
