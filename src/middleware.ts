@@ -5,7 +5,6 @@ import { secret } from "./config";
 
 export async function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
-    console.log(secret);
     // Permitir acceso libre a la ruta "/"
     if (pathname === "/") {
         return NextResponse.next();
@@ -14,20 +13,16 @@ export async function middleware(request: NextRequest) {
     // Obtener el token de las cookies
     const token = request.cookies.get("access_token");
     const tokenValue = token?.value || ""; // Si no existe el token, usar cadena vacía
-    console.log("token:", tokenValue);
 
     // Si no hay token y la ruta no es "/", redirigir al login
     if (!tokenValue) {
-        console.log("No hay token");
         return NextResponse.redirect(new URL('/formsAuth/login', request.url));
     }
 
     try {
         // Verificar y decodificar el JWT
         const secretJWT = new TextEncoder().encode(secret);
-        console.log(secretJWT);
         const { payload } = await jwtVerify(tokenValue, secretJWT);
-        console.log("payload:", payload);
         const role = payload.rol as string | undefined;
 
         //Definir permisos por rol
